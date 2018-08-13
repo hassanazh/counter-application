@@ -1,6 +1,5 @@
 package com.counter;
 
-import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
@@ -8,7 +7,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +43,17 @@ public class CounterServiceTest {
         JSONObject jsonObject = new JSONObject(jsonString);
         assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
         assertEquals(jsonObject.get("counterValue"), 1);
+    }
+
+    @Test
+    public void getCounterWhenCounterDoesntExist() throws IOException {
+        HttpUriRequest request = new HttpGet(SERVICE_URL + "/counter4");
+        HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+
+        String jsonString = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject jsonObject = new JSONObject(jsonString);
+        assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_NOT_FOUND);
+        assertEquals(jsonObject.get("status"), "Not Found");
     }
 
     @Test
