@@ -44,7 +44,7 @@ public class CounterService {
             return incrementCounterValue(counterName);
         }
 
-        Counter counter = new Counter(counterName, 1L);
+        Counter counter = new Counter(counterName);
         counterArrayList.add(counter);
         return counter;
     }

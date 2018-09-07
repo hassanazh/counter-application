@@ -1,25 +1,26 @@
 package com.counter;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Counter {
     private String counterName;
-    private Long counterValue;
+    private AtomicLong counterValue = new AtomicLong(1L);
 
     public Counter() { }
 
-    public Counter(String counterName, Long counterValue) {
+    public Counter(String counterName) {
         this.counterName = counterName;
-        this.counterValue = counterValue;
     }
 
     public String getCounterName() {
         return counterName;
     }
 
-    public Long getCounterValue() {
+    public AtomicLong getCounterValue() {
         return counterValue;
     }
 
     public void incrementCounter() {
-        counterValue++;
+        counterValue.incrementAndGet();
     }
 }
