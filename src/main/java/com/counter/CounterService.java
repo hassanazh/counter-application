@@ -30,10 +30,9 @@ public class CounterService {
 
         if(counter != null) {
             counter.incrementCounter();
-            return counter;
         }
 
-        return null;
+        return counter;
     }
 
     @POST

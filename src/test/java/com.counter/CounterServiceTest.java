@@ -19,19 +19,26 @@ import static junit.framework.Assert.assertEquals;
 public class CounterServiceTest {
     private static final String SERVICE_URL
             = "http://localhost:8080/counter";
+    public static final String COUNTER_VALUE = "counterValue";
+    public static final String COUNTER_NAME = "counterName";
     private static ArrayList<String> counterNames = new ArrayList<>();
 
     @BeforeClass
-    public static void initializeCounter() throws IOException  {
+    public static void initializeCounter()  {
         counterNames.add("counter1");
         counterNames.add("counter2");
         counterNames.add("counter3");
 
-        for (String counterName: counterNames) {
+        counterNames.forEach(counterName -> {
             HttpUriRequest request = new HttpPost(SERVICE_URL + "/" + counterName);
-            HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+            HttpResponse httpResponse = null;
+            try {
+                httpResponse = HttpClientBuilder.create().build().execute(request);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getCause());
+            }
             assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
-        }
+        });
     }
 
     @Test
@@ -42,7 +49,7 @@ public class CounterServiceTest {
         String jsonString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject jsonObject = new JSONObject(jsonString);
         assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
-        assertEquals(jsonObject.get("counterValue"), 1);
+        assertEquals(jsonObject.get(COUNTER_VALUE), 1);
     }
 
     @Test
@@ -64,7 +71,7 @@ public class CounterServiceTest {
         String jsonString = EntityUtils.toString(httpResponse.getEntity());
         JSONObject jsonObject = new JSONObject(jsonString);
         assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
-        assertEquals(jsonObject.get("counterValue"), 2);
+        assertEquals(jsonObject.get(COUNTER_VALUE), 2);
     }
 
     @Test
@@ -76,12 +83,12 @@ public class CounterServiceTest {
         JSONArray jsonArray = new JSONArray(jsonString);
 
 
-        assertEquals(jsonArray.getJSONObject(0).get("counterName"), "counter1");
-        assertEquals(jsonArray.getJSONObject(0).get("counterValue"), 1);
-        assertEquals(jsonArray.getJSONObject(1).get("counterName"), "counter2");
-        assertEquals(jsonArray.getJSONObject(1).get("counterValue"), 2);
-        assertEquals(jsonArray.getJSONObject(2).get("counterName"), "counter3");
-        assertEquals(jsonArray.getJSONObject(2).get("counterValue"), 1);
+        assertEquals(jsonArray.getJSONObject(0).get(COUNTER_NAME), "counter1");
+        assertEquals(jsonArray.getJSONObject(0).get(COUNTER_VALUE), 1);
+        assertEquals(jsonArray.getJSONObject(1).get(COUNTER_NAME), "counter2");
+        assertEquals(jsonArray.getJSONObject(1).get(COUNTER_VALUE), 2);
+        assertEquals(jsonArray.getJSONObject(2).get(COUNTER_NAME), "counter3");
+        assertEquals(jsonArray.getJSONObject(2).get(COUNTER_VALUE), 1);
         assertEquals(httpResponse.getStatusLine().getStatusCode(), HttpStatus.SC_OK);
     }
 

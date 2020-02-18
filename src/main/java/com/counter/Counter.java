@@ -20,7 +20,7 @@ public class Counter {
         return counterValue;
     }
 
-    public void incrementCounter() {
+    public synchronized void incrementCounter() {
         counterValue.incrementAndGet();
     }
 }
